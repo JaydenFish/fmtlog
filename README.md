@@ -96,9 +96,8 @@ logi("{:*^30}", "centered");
 logi("int: {0:d};  hex: {0:#x};  oct: {0:#o};  bin: {0:#b}", 42);
 logi("dynamic precision: {:.{}f}", 3.14, 1);
 
-// This gives a compile-time error because d is an invalid format specifier for a string.
-// FMT_STRING() is not needed from C++20 onward
-logi(FMT_STRING("{:d}"), "I am not a number");
+// A compile-time error because 'd' is an invalid specifier for strings.
+logi("{:d}", "foo");
 ```
 As an asynchronous logging library, fmtlog provides additional support for passing arguments by pointer(which is seldom needed for fmtlib and it only supports void and char pointers). User can pass a pointer of any type as argument to avoid copy overhead if the lifetime of referred object is assured(otherwise the polling thread will refer to a dangling pointer!). For string arg as an example, fmtlog copies string content for type `std::string` by default, but only a pointer for type `std::string*`:
 ```c++
@@ -205,4 +204,4 @@ The other optimization is that static information of a log(such as format string
 
 However, these decoding functions bloat program size with each function consuming around 50 bytes. In addition, the static infomation entry also consumes 50-ish bytes runtime memory for each log statement. Such memory overhead may not be worthwhile for those infrequent and latency insensitive logs(e.g. program initialization info), thus fmtlog provides user with another log macro which disables this optimization: `FMTLOG_ONCE` and of couse shortcuts: `logdo`, `logio`, `logwo`and `logeo`. `FMTLOG_ONCE` will not create a static info table entry, nor add a decoding function: it pushes static info along with formatted msg body onto the queue. Note that passing argument by pointer is not supported by `FMTLOG_ONCE`.
 
-For those who prefer to further optimize memory usage by filtering log at compile time, macro `FMTLOG_ACTIVE_LEVEL` is applied with a default value `FMTLOG_LEVEL_INF`, meaning debug logs will simply be discarded at compile time. Note that `FMTLOG_ACTIVE_LEVEL` only applies to log shortcut macros, e.g. `logi`, but not `FMTLOG`. Similarly, runtime log level filtering can be disabled by defining macro `FMTLOG_NO_CHECK_LEVEL`, which will increase performance and reduce generated code size a bit.
+For those who prefer to further optimize memory usage by filtering log at compile time, macro `FMTLOG_ACTIVE_LEVEL` is applied with a default value `FMTLOG_LEVEL_INF`, meaning debug logs will simply be discarded at compile time. Note that `FMTLOG_ACTIVE_LEVEL` only applies to log shortcut macros, e.g. `logi`, but not `FMTLOG`.

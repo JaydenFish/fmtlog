@@ -15,8 +15,7 @@ void logcb(int64_t ns, fmtlog::LogLevel level, fmt::string_view location, size_t
 
 int main() {
   char randomString[] = "Hello World";
-  logi("A string, pointer, number, and float: '{}', {}, {}, {}", randomString, (void*)&randomString,
-       512, 3.14159);
+  logi("A string, pointer, number, and float: '{}', {}, {}, {}", randomString, (void*)&randomString, 512, 3.14159);
 
   int a = 4;
   auto sptr = std::make_shared<int>(5);
@@ -32,8 +31,7 @@ int main() {
   str = "bbb";
   strcpy(cstr, "222");
 
-  // logi(FMT_STRING("This msg will trigger compile error: {:d}"), "I am not a number");
-  // FMT_STRING() above is not needed for c++20
+  // logi("This msg will trigger compile error: {", 123);
 
   logd("This message wont be logged since it is lower "
        "than the current log level.");
